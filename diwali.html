@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diwali Sales Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3e50;
+        }
+        label {
+            font-size: 16px;
+            margin: 10px 0;
+            display: block;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .sales-summary {
+            margin-top: 20px;
+        }
+        .sales-summary h3 {
+            text-align: center;
+            color: #2d3e50;
+        }
+        .sales-summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sales-summary ul li {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        .total-revenue {
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Diwali Sales Tracker</h1>
+
+    <form id="salesForm">
+        <label for="productName">Product Name</label>
+        <input type="text" id="productName" required>
+
+        <label for="quantitySold">Quantity Sold</label>
+        <input type="number" id="quantitySold" required>
+
+        <label for="pricePerUnit">Price per Unit (₹)</label>
+        <input type="number" id="pricePerUnit" required>
+
+        <label for="discount">Discount (%)</label>
+        <input type="number" id="discount" value="0" required>
+
+        <button type="submit">Add Sale</button>
+    </form>
+
+    <div class="sales-summary" id="salesSummary" style="display: none;">
+        <h3>Sales Summary</h3>
+        <ul id="salesList"></ul>
+        <div class="total-revenue" id="totalRevenue"></div>
+    </div>
+</div>
+
+<script>
+    const salesData = [];
+
+    document.getElementById('salesForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get form values
+        const productName = document.getElementById('productName').value;
+        const quantitySold = parseInt(document.getElementById('quantitySold').value);
+        const pricePerUnit = parseFloat(document.getElementById('pricePerUnit').value);
+        const discount = parseFloat(document.getElementById('discount').value);
+
+        // Calculate total price after discount
+        const totalPrice = quantitySold * pricePerUnit * (1 - discount / 100);
+
+        // Store sale data
+        salesData.push({ productName, quantitySold, pricePerUnit, discount, totalPrice });
+
+        // Clear form inputs
+        document.getElementById('salesForm').reset();
+
+        // Update sales summary
+        updateSalesSummary();
+    });
+
+    function updateSalesSummary() {
+        const salesList = document.getElementById('salesList');
+        const totalRevenueElement = document.getElementById('totalRevenue');
+        let totalRevenue = 0;
+
+        // Clear previous list
+        salesList.innerHTML = '';
+
+        // Add each sale to the list
+        salesData.forEach(sale => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${sale.productName} - ₹${sale.totalPrice.toFixed(2)} (Discount: ${sale.discount}%)`;
+            salesList.appendChild(listItem);
+            totalRevenue += sale.totalPrice;
+        });
+
+        // Display total revenue
+        totalRevenueElement.textContent = `Total Revenue: ₹${totalRevenue.toFixed(2)}`;
+
+        // Show sales summary section
+        document.getElementById('salesSummary').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
